@@ -1,0 +1,155 @@
+import time
+import random
+
+
+def srt1(arr):
+    start = time.time()
+    for i in range(len(arr) - 1):
+        min_index = i
+        for j in range(i + 1, len(arr)):
+            if arr[min_index] > arr[j]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    end = time.time()
+    print('Sort1 (Selection Sort): ', end - start)
+
+def srt2(arr):
+    start = time.time()
+    for i in range(1, len(arr)):
+        j = i - 1
+        temp = arr[i]
+        while j >= 0 and arr[j] > temp:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = temp
+    end = time.time()
+    print('Sort2 (Insertion Sort): ', end - start)
+
+def srt3(arr):
+    start = time.time()
+    for i in range(len(arr) - 1):
+        for j in range(i + 1, len(arr)):
+            if arr[i] > arr[j]:
+                arr[i], arr[j] = arr[j], arr[i]
+    end = time.time()
+    print('Sort3 (Bubble Sort): ', end - start)
+
+def srt4(arr):
+    start = time.time()
+    M = max(arr)
+    count_array = [0] * (M + 1)
+    output_array = [0] * len(arr)
+
+    for num in arr:
+        count_array[num] += 1
+
+    for i in range(1, M + 1):
+        count_array[i] += count_array[i - 1]
+
+    for i in range(len(arr) - 1, -1, -1):
+        output_array[count_array[arr[i]] - 1] = arr[i]
+        count_array[arr[i]] -= 1
+
+    arr[:] = output_array
+    end = time.time()
+    print('Sort4 (Counting Sort): ', end - start)
+
+def srt5(arr):
+    start = time.time()
+    max_num = max(arr)
+    exp = 1
+    while max_num // exp > 0:
+        n = len(arr)
+        output = [0] * n
+        count = [0] * 10
+
+        for i in range(n):
+            index = (arr[i] // exp) % 10
+            count[index] += 1
+
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+
+        i = n - 1
+        while i >= 0:
+            index = (arr[i] // exp) % 10
+            output[count[index] - 1] = arr[i]
+            count[index] -= 1
+            i -= 1
+
+        for i in range(len(arr)):
+            arr[i] = output[i]
+
+        exp *= 10
+    end = time.time()
+    print('Sort5 (Radix Sort): ', end - start)
+
+def srt6(arr):
+    start = time.time()
+    def partition(left, right):
+        pivot = arr[left]
+        i = left + 1
+        j = right
+
+        while i <= j:
+            while i <= j and arr[i] < pivot:
+                i += 1
+            while i <= j and arr[j] > pivot:
+                j -= 1
+            if i <= j:
+                arr[i], arr[j] = arr[j], arr[i]
+                i += 1
+                j -= 1
+
+        arr[left], arr[j] = arr[j], arr[left]
+        return j
+
+    def quicksort(left, right):
+        if left < right:
+            j = partition(left, right)
+            quicksort(left, j - 1)
+            quicksort(j + 1, right)
+
+    quicksort(0, len(arr) - 1)
+    end = time.time()
+    print('Sort6 (Quick Sort): ', end - start)
+
+def srt7(arr):
+    start = time.time()
+    def merge(left, right):
+        result = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        result.extend(left[i:])
+        result.extend(right[j:])
+        return result
+
+    def mergesort(arr):
+        if len(arr) <= 1:
+            return arr
+        mid = len(arr) // 2
+        left = arr[:mid]
+        right = arr[mid:]
+        return merge(mergesort(left), mergesort(right))
+
+    arr[:] = mergesort(arr)
+    end = time.time()
+    print('Sort7 (Merge Sort): ', end - start)
+
+
+arr = [random.randint(1,  999) for _ in range(10)]
+
+
+srt1(arr.copy())
+srt2(arr.copy())
+srt3(arr.copy())
+srt4(arr.copy())
+srt5(arr.copy())
+srt6(arr.copy())
+srt7(arr.copy())
